@@ -1,0 +1,26 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  deployment:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: 'http://syntaqx.io'
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: syntaqx/setup-kustomize@v1
+      -
+        name: Deploy
+        run: |-
+          kustomize edit set image syntaqx/example=syntaqx/example:sha-12345
+          kustomize build k8s/overlays/production
