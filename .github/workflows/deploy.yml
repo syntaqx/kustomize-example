@@ -17,7 +17,7 @@ jobs:
       - uses: syntaqx/setup-kustomize@v1
       -
         name: Deploy
-        working-dir: k8s/overlays/production
+        working-directory: k8s/overlays/production
         run: |-
           kustomize edit set image syntaqx/example=syntaqx/example:sha-12345
           kustomize build .
