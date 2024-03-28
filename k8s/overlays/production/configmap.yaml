@@ -3,6 +3,5 @@ kind: ConfigMap
 metadata:
   name: example
 data:
-  APP_NAME: "Laravel"
   APP_ENV: "production"
   APP_DEBUG: "false"
