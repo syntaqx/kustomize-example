@@ -8,11 +8,7 @@ on:
 jobs:
 
   deployment:
-    needs: [ build ]
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: 'http://syntaqx.io'
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: false
