@@ -32,7 +32,7 @@ jobs:
           kustomize edit set image syntaqx/example=syntaqx/example:sha-${{ needs.outputs.sha_short }}
           kustomize build .
 
-  deployment:
+  production:
     needs: [ vars ]
     runs-on: ubuntu-latest
     environment:
