@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example
+data:
+  APP_ENV: "staging"
+  APP_DEBUG: "true"
