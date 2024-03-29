@@ -7,11 +7,37 @@ on:
 
 jobs:
 
-  deployment:
+  vars:
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: false
+    outputs:
+      sha_short: ${{ steps.git.outputs.sha_short }}
+    steps:
+      - name: Set Git Outputs
+        id: git
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+  staging:
+    needs: [ vars ]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.website.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: syntaqx/setup-kustomize@v1
+      -
+        name: Deploy
+        working-directory: k8s/overlays/staging
+        run: |-
+          kustomize edit set image syntaqx/example=syntaqx/example:sha-${{ needs.outputs.sha_short }}
+          kustomize build .
+
+  deployment:
+    needs: [ vars ]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://website.com
     steps:
       - uses: actions/checkout@v4
       - uses: syntaqx/setup-kustomize@v1
@@ -19,5 +45,5 @@ jobs:
         name: Deploy
         working-directory: k8s/overlays/production
         run: |-
-          kustomize edit set image syntaqx/example=syntaqx/example:sha-12345
+          kustomize edit set image syntaqx/example=syntaqx/example:sha-${{ needs.outputs.sha_short }}
           kustomize build .
