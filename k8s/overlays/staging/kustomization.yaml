@@ -1,0 +1,7 @@
+bases:
+- ../../base
+
+patches:
+- path: configmap.yaml
+
+namePrefix: staging-
